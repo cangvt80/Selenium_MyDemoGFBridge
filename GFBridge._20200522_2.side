@@ -14,6 +14,13 @@
       "targets": [],
       "value": ""
     }, {
+      "id": "23ceae97-43fd-4b48-9ee5-6efe45f275ac",
+      "comment": "",
+      "command": "eyesCheckWindow",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }, {
       "id": "8846d44a-475f-409b-8076-73364f07cc7e",
       "comment": "",
       "command": "setWindowSize",
@@ -87,6 +94,23 @@
         ["xpath=//button[contains(.,'Login')]", "xpath:innerText"]
       ],
       "value": ""
+    }, {
+      "id": "51d0a8d7-b684-4ff8-83fd-b16197ce7976",
+      "comment": "",
+      "command": "eyesCheckElement",
+      "target": "id=waitForApprovalMenuId",
+      "targets": [
+        ["id=waitForApprovalMenuId", "id"],
+        ["linkText=Wait for approval", "linkText"],
+        ["css=#waitForApprovalMenuId", "css:finder"],
+        ["xpath=//a[contains(text(),'Wait for approval')]", "xpath:link"],
+        ["xpath=//a[@id='waitForApprovalMenuId']", "xpath:attributes"],
+        ["xpath=//li[@id='waitForApprovalMenu']/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/bridge/en-US/Batches/WaitForApproval')]", "xpath:href"],
+        ["xpath=//li[3]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Wait for approval')]", "xpath:innerText"]
+      ],
+      "value": ""
     }]
   }, {
     "id": "736cbcd8-20d3-4504-bf02-a105fcc679af",
@@ -127,6 +151,21 @@
         ["xpath=//a[contains(@href, '/bridge/en-US/Enrichment/Dashboard')]", "xpath:href"],
         ["xpath=//li[2]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Enrichment(2)')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "5f3e3fad-94f8-4679-89a6-2355e2701623",
+      "comment": "",
+      "command": "eyesCheckElement",
+      "target": "linkText=gfsu",
+      "targets": [
+        ["linkText=gfsu", "linkText"],
+        ["css=strong > a", "css:finder"],
+        ["xpath=//a[contains(text(),'gfsu')]", "xpath:link"],
+        ["xpath=//div[@id='logindisplay']/strong/a", "xpath:idRelative"],
+        ["xpath=//a[@href='http://cang-pc/identity']", "xpath:href"],
+        ["xpath=//strong/a", "xpath:position"],
+        ["xpath=//a[contains(.,'gfsu')]", "xpath:innerText"]
       ],
       "value": ""
     }]
@@ -1126,7 +1165,33 @@
     "globalConfig": {
       "snapshot": "const { Eyes, Target } = require('@applitools/eyes-selenium');global.Target = Target;const { ConsoleLogHandler, BatchInfo } = require('@applitools/eyes-sdk-core');let apiKey = process.env.APPLITOOLS_API_KEY, serverUrl = process.env.APPLITOOLS_SERVER_URL, appName = \"GFBridge\", batchId = configuration.runId, batchName;"
     },
+    "suites": [{
+      "name": "Login_Suite",
+      "persistSession": false,
+      "snapshot": {
+        "hook": "beforeAll(async () => {batchName = \"Login_Suite\";});beforeEach(async () => {global.eyes = Eyes.fromBrowserInfo(serverUrl, configuration.params.eyesDisabled, configuration.params.eyesRendering ? { browser: configuration.params.eyesRendering } : undefined);eyes.setApiKey(apiKey);eyes.getBaseAgentId = () => (\"eyes.seleniumide.runner.\" + (eyes._isVisualGrid ? \"visualgrid\" : \"local\") + \"/1.10.1\");eyes.setAgentId(\"eyes.seleniumide.runner.\" + (eyes._isVisualGrid ? \"visualgrid\" : \"local\") + \"/1.10.1\");eyes.setBatch(new BatchInfo(batchName, undefined, batchId));if(!eyes._isVisualGrid){eyes.setHideScrollbars(true);eyes.setStitchMode(\"CSS\");}eyes.setSendDom(configuration.params.eyesDomUploadEnabled === undefined ? true : configuration.params.eyesDomUploadEnabled);if (configuration.params.eyesLogsEnabled) {eyes.setLogHandler(new ConsoleLogHandler(true));}});afterEach(async () => {if (eyes._isOpen) {eyes.getEyesRunner ? await eyes.getEyesRunner().getAllResults() : await eyes.close();}});"
+      }
+    }],
     "tests": [{
+      "id": "dab7b506-516d-4af5-ba2e-be6bdc6625a8",
+      "snapshot": {
+        "commands": {
+          "23ceae97-43fd-4b48-9ee5-6efe45f275ac": "if (!opts.isNested) {await eyes.check(\"\" || (new URL(await driver.getCurrentUrl())).pathname, Target.window().webHook(preRenderHook).accessibilityValidation(configuration.params.eyesAccessibilityLevel || \"None\").fully(true));}",
+          "51d0a8d7-b684-4ff8-83fd-b16197ce7976": "if (!opts.isNested) {await driver.wait(until.elementLocated(By.id(`waitForApprovalMenuId`)), configuration.timeout); await eyes.check(\"\" || (new URL(await driver.getCurrentUrl())).pathname, Target.region(By.id(`waitForApprovalMenuId`)).webHook(preRenderHook).accessibilityValidation(configuration.params.eyesAccessibilityLevel || \"None\"));}"
+        },
+        "setupHooks": ["const _driver = driver;driver = await eyes.open(driver, appName, \"TC0001_Login\");global.preRenderHook = \"\";"],
+        "teardownHooks": ["driver = _driver;"]
+      }
+    }, {
+      "id": "736cbcd8-20d3-4504-bf02-a105fcc679af",
+      "snapshot": {
+        "commands": {
+          "5f3e3fad-94f8-4679-89a6-2355e2701623": "if (!opts.isNested) {await driver.wait(until.elementLocated(By.linkText(`gfsu`)), configuration.timeout); await eyes.check(\"\" || (new URL(await driver.getCurrentUrl())).pathname, Target.region(By.linkText(`gfsu`)).webHook(preRenderHook).accessibilityValidation(configuration.params.eyesAccessibilityLevel || \"None\"));}"
+        },
+        "setupHooks": ["const _driver = driver;driver = await eyes.open(driver, appName, \"TC0002_Login_Success\");global.preRenderHook = \"\";"],
+        "teardownHooks": ["driver = _driver;"]
+      }
+    }, {
       "id": "cd44e1d6-36de-4a4a-b48c-95881f419692",
       "snapshot": {
         "commands": {
